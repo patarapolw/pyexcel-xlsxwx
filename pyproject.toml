@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pyexcel-xlsxwx"
-version = "0.1.1"
+version = "0.1.1.1"
 description = "Save pyexcel data with XlsxWriter, while retaining good formatting."
 authors = ["Pacharapol Withayasakpunt <patarapolw@gmail.com>"]
 license = "MIT"
@@ -12,7 +12,7 @@ homepage = "https://github.com/patarapolw/pyexcel-xlsxwx"
 keywords = ['pyexcel', 'excel', 'xlsxwriter']
 
 [tool.poetry.dependencies]
-python = ">=3"
+python = ">=3.5"
 xlsxwriter = "^1.0"
 "ruamel.yaml" = "^0.15.50"
 importlib_resources = "^1.0"
