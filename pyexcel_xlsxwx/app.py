@@ -107,7 +107,7 @@ class ExcelWriter:
         if smart_fit:
             for col_i, _ in enumerate(self.data[sheet_name][0]):
                 col_width = max([len(str(row[col_i])) if row[col_i] is not None else ''
-                                 for row in self.data[sheet_name]])
+                                 for row in self.data[sheet_name]]) + 2
                 if col_width > max_column_width:
                     col_width = max_column_width
 
