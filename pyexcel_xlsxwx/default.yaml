@@ -6,7 +6,9 @@ workbook:
 worksheet:
   _default:
     freeze_panes: A2
-    column_width: 30
+#    column_width: 30
+    smart_fit: true
+    max_column_width: 30
 format:
   _default:
     valign: top

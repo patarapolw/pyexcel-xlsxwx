@@ -82,34 +82,36 @@ class ExcelWriter:
         default_format = worksheet_config.pop('_default', None)
         if default_format is not None:
             for sheet_name in self.data.keys():
-                ws = wb.get_worksheet_by_name(sheet_name)
-
-                freeze_panes = default_format.get('freeze_panes', None)
-                if freeze_panes is not None:
-                    ws.freeze_panes(freeze_panes)
-
-                column_width = default_format.get('column_width', None)
-                if column_width is not None:
-                    if isinstance(column_width, list):
-                        for i, width in enumerate(column_width):
-                            ws.set_column(i, i, width)
-                    else:
-                        ws.set_column(0, len(self.data[sheet_name][0]) - 1, column_width)
+                self._set_worksheet_formatting(wb, sheet_name, default_format)
 
         for sheet_name, formatting in worksheet_config.items():
-            ws = wb.get_worksheet_by_name(sheet_name)
+            self._set_worksheet_formatting(wb, sheet_name, formatting)
 
-            freeze_panes = formatting.get('freeze_panes', None)
-            if freeze_panes is not None:
-                ws.freeze_panes(freeze_panes)
+    def _set_worksheet_formatting(self, wb, sheet_name, formatting):
+        ws = wb.get_worksheet_by_name(sheet_name)
 
-            column_width = formatting.get('column_width', None)
-            if column_width is not None:
-                if isinstance(column_width, list):
-                    for i, width in enumerate(column_width):
-                        ws.set_column(i, i, width)
-                else:
-                    ws.set_column(0, len(self.data[sheet_name][0]) - 1, column_width)
+        freeze_panes = formatting.get('freeze_panes', None)
+        if freeze_panes is not None:
+            ws.freeze_panes(freeze_panes)
+
+        column_width = formatting.get('column_width', None)
+        if column_width is not None:
+            if isinstance(column_width, list):
+                for i, width in enumerate(column_width):
+                    ws.set_column(i, i, width)
+            else:
+                ws.set_column(0, len(self.data[sheet_name][0]) - 1, column_width)
+
+        smart_fit = formatting.get('smart_fit', False)
+        max_column_width = formatting.get('max_column_width', 30)
+        if smart_fit:
+            for col_i, _ in enumerate(self.data[sheet_name][0]):
+                col_width = max([len(str(row[col_i])) if row[col_i] is not None else ''
+                                 for row in self.data[sheet_name]])
+                if col_width > max_column_width:
+                    col_width = max_column_width
+
+                ws.set_column(col_i, col_i, col_width)
 
 
 def deep_merge_dict(source, destination):
