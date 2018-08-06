@@ -12,6 +12,13 @@ Save pyexcel data with XlsxWriter, while retaining good formatting.
 - Allow setting column widths and word wrap.
 - A package for reading data is not included, please see [`pyexcel`'s plugins here](https://github.com/pyexcel/pyexcel#available-plugins).
 
+## Installation
+
+```commandline
+$ pip install pyexcel-xlsxwx
+```
+Note that `pyexcel` is not a dependency.
+
 ## Usage
 
 ```python
