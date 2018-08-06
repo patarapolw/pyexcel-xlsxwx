@@ -1,0 +1,13 @@
+workbook:
+  constant_memory: true
+  strings_to_numbers: false
+  strings_to_formulas: false
+  strings_to_urls: true
+worksheet:
+  _default:
+    freeze_panes: A2
+    column_width: 30
+format:
+  _default:
+    valign: top
+    text_wrap: true
