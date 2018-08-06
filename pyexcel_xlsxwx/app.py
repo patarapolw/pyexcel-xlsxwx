@@ -7,7 +7,7 @@ from collections import OrderedDict
 
 class ExcelWriter:
     def __init__(self, data, config=None):
-        self.config = None
+        self.config = dict()
 
         if config is not None:
             if isinstance(config, str):
@@ -17,8 +17,8 @@ class ExcelWriter:
             elif isinstance(config, (dict, OrderedDict)):
                 self.config = config
 
-        if self.config is None:
-            self.config = yaml.safe_load(importlib_resources.read_text('pyexcel_xlsxwx', 'default.yaml'))
+        self.config = deep_merge_dict(self.config,
+                                      yaml.safe_load(importlib_resources.read_text('pyexcel_xlsxwx', 'default.yaml')))
 
         self.data = data
 
@@ -110,3 +110,23 @@ class ExcelWriter:
                         ws.set_column(i, i, width)
                 else:
                     ws.set_column(0, len(self.data[sheet_name][0]) - 1, column_width)
+
+
+def deep_merge_dict(source, destination):
+    """
+    run me with nosetests --with-doctest file.py
+
+    >>> a = { 'first' : { 'all_rows' : { 'pass' : 'dog', 'number' : '1' } } }
+    >>> b = { 'first' : { 'all_rows' : { 'fail' : 'cat', 'number' : '5' } } }
+    >>> deep_merge_dict(b, a) == { 'first' : { 'all_rows' : { 'pass' : 'dog', 'fail' : 'cat', 'number' : '5' } } }
+    True
+    """
+    for key, value in source.items():
+        if isinstance(value, (dict, OrderedDict)):
+            # get node or create one
+            node = destination.setdefault(key, {})
+            deep_merge_dict(value, node)
+        else:
+            destination[key] = value
+
+    return destination

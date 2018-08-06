@@ -10,17 +10,17 @@ import pyexcel_xlsxwx
 ])
 @pytest.mark.parametrize('config', [
     None,
-    'config1.yaml'
+    'config1.yaml',
+    {'worksheet': {'_default': {'freeze_panes': None}}}
 ])
 def test_save(in_file, config,
               request):
-    config_path = None
-    if config is not None:
-        config_path = Path('tests/input').joinpath(config)
-        assert config_path.exists()
+    if isinstance(config, str):
+        config = Path('tests/input').joinpath(config)
+        assert config.exists()
 
-        config_path = str(config_path)
+        config = str(config)
 
     data = pyexcel.get_book_dict(file_name=str(Path('tests/input').joinpath(in_file)))
     pyexcel_xlsxwx.save_data(str(Path('tests/output').joinpath(request.node.name).with_suffix('.xlsx')),
-                             data, config=config_path)
+                             data, config=config)

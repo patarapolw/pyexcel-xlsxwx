@@ -9,5 +9,5 @@ workbook:
 #    column_width: 30
 format:
   _default:
-    valign: top
+    valign: bottom
     text_wrap: true

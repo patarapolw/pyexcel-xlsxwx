@@ -54,6 +54,14 @@ format:
 ```
 `column_width` can also accept a list of numbers.
 
+For example, to cancel out `freeze_panes`, try:
+
+```python
+>>> pyexcel_xlsxwx.save_data("your_file.xlsx", data, config={'worksheet': {'_default': {'freeze_panes': None}}})
+```
+
+The settings will merge (thanks to https://stackoverflow.com/questions/20656135/python-deep-merge-dictionary-data), so that the other formattings won't be lost.
+
 ## Associated projects
 
 - [pyexcel-export](https://github.com/patarapolw/pyexcel-export) - operates using OpenPyXL, which seeming has bad word wrap support. However, the formatting can be well preserved.
