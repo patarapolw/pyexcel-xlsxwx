@@ -3,6 +3,7 @@ import ruamel.yaml as yaml
 from pathlib import Path
 import importlib_resources
 from collections import OrderedDict
+from io import BytesIO
 
 
 class ExcelWriter:
@@ -23,21 +24,22 @@ class ExcelWriter:
         self.data = data
 
     def save(self, out_file):
-        wb = xlsxwriter.Workbook(out_file, self.config.get('workbook', dict()))
+        output = BytesIO()
 
-        for sheet_name in self.data.keys():
-            ws = wb.add_worksheet(sheet_name)
+        with xlsxwriter.Workbook(output, self.config.get('workbook', dict())) as wb:
+            for sheet_name in self.data.keys():
+                ws = wb.add_worksheet(sheet_name)
 
-        self.set_worksheet_formatting(wb)
-        self.set_formatting(wb)
+            self.set_worksheet_formatting(wb)
+            self.set_formatting(wb)
 
-        for sheet_name, sheet_matrix in self.data.items():
-            ws = wb.get_worksheet_by_name(sheet_name)
+            for sheet_name, sheet_matrix in self.data.items():
+                ws = wb.get_worksheet_by_name(sheet_name)
 
-            for row_i, row in enumerate(sheet_matrix):
-                ws.write_row(row_i, 0, row)
+                for row_i, row in enumerate(sheet_matrix):
+                    ws.write_row(row_i, 0, row)
 
-        wb.close()
+        Path(out_file).write_bytes(output.getvalue())
 
     def set_formatting(self, wb):
         format_config = self.config.get('format', dict())
