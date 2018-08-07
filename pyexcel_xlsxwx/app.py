@@ -98,7 +98,7 @@ class ExcelWriter:
         max_column_width = formatting.get('max_column_width', 30)
         if smart_fit:
             for col_i, _ in enumerate(self.data[sheet_name][0]):
-                col_width = max([len(str(row[col_i])) if row[col_i] is not None else ''
+                col_width = max([len(str(row[col_i])) if row[col_i] is not None else 0
                                  for row in self.data[sheet_name]]) + 2
                 if col_width > max_column_width:
                     col_width = max_column_width
