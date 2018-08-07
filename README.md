@@ -66,6 +66,7 @@ To cancel out `freeze_panes`, try:
 
 The settings will merge (thanks to https://stackoverflow.com/questions/20656135/python-deep-merge-dictionary-data), so that the other formattings won't be lost.
 
-## Associated projects
+## Related projects
 
+- [pyexcel-openpyxlx](https://github.com/patarapolw/pyexcel-openpyxlx) - export the styles for XlsxWriter.
 - [pyexcel-export](https://github.com/patarapolw/pyexcel-export) - operates using OpenPyXL, which seeming has bad word wrap support. However, the formatting can be well preserved.
