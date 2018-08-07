@@ -94,14 +94,6 @@ class ExcelWriter:
         if freeze_panes is not None:
             ws.freeze_panes(freeze_panes)
 
-        column_width = formatting.get('column_width', None)
-        if column_width is not None:
-            if isinstance(column_width, list):
-                for i, width in enumerate(column_width):
-                    ws.set_column(i, i, width)
-            else:
-                ws.set_column(0, len(self.data[sheet_name][0]) - 1, column_width)
-
         smart_fit = formatting.get('smart_fit', False)
         max_column_width = formatting.get('max_column_width', 30)
         if smart_fit:
@@ -112,6 +104,28 @@ class ExcelWriter:
                     col_width = max_column_width
 
                 ws.set_column(col_i, col_i, col_width)
+
+        column_width = formatting.get('column_width', None)
+        if column_width is not None:
+            if isinstance(column_width, list):
+                for i, width in enumerate(column_width):
+                    ws.set_column(i, i, width)
+            elif isinstance(column_width, (dict, OrderedDict)):
+                for key, width in column_width.keys():
+                    ws.set_column('{0}:{0}'.format(key), width)
+            else:
+                ws.set_column(0, len(self.data[sheet_name][0]) - 1, column_width)
+
+        row_height = formatting.get('row_height', None)
+        if row_height is not None:
+            if isinstance(row_height, list):
+                for i, height in enumerate(row_height):
+                    ws.set_row(i, i, height)
+            elif isinstance(row_height, (dict, OrderedDict)):
+                for key, height in row_height.items():
+                    ws.set_row(int(key), int(key), height)
+            else:
+                ws.set_row(0, len(self.data[sheet_name]) - 1, row_height)
 
 
 def deep_merge_dict(source, destination):

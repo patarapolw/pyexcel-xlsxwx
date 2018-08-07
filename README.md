@@ -54,9 +54,11 @@ format:
     valign: top
     text_wrap: true
 ```
-`column_width` can also accept a list of numbers.
+`column_width` can also accept a list and a dictionary where key indicates the column.
 
-For example, to cancel out `freeze_panes`, try:
+`row_height` can also be set the same way.
+
+To cancel out `freeze_panes`, try:
 
 ```python
 >>> pyexcel_xlsxwx.save_data("your_file.xlsx", data, config={'worksheet': {'_default': {'freeze_panes': None}}})

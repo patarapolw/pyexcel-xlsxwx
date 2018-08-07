@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pyexcel-xlsxwx"
-version = "0.1.3.1"
+version = "0.1.4"
 description = "Save pyexcel data with XlsxWriter, while retaining good formatting."
 authors = ["Pacharapol Withayasakpunt <patarapolw@gmail.com>"]
 license = "MIT"
