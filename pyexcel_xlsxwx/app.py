@@ -15,6 +15,8 @@ class ExcelWriter:
                 config_yaml_path = Path(config)
                 if config_yaml_path.exists() and config_yaml_path.suffix in ('.yml', '.yaml'):
                     self.config = yaml.safe_load(config_yaml_path.read_text())
+                else:
+                    self.config = yaml.safe_load(config)
             elif isinstance(config, (dict, OrderedDict)):
                 self.config = config
 
@@ -26,7 +28,11 @@ class ExcelWriter:
     def save(self, out_file):
         output = BytesIO()
 
-        with xlsxwriter.Workbook(output, self.config.get('workbook', dict())) as wb:
+        workbook_config = self.config.get('workbook', None)
+        if workbook_config is None:
+            workbook_config = dict()
+
+        with xlsxwriter.Workbook(output, workbook_config) as wb:
             for sheet_name in self.data.keys():
                 ws = wb.add_worksheet(sheet_name)
 
@@ -42,7 +48,9 @@ class ExcelWriter:
         Path(out_file).write_bytes(output.getvalue())
 
     def set_formatting(self, wb):
-        format_config = self.config.get('format', dict())
+        format_config = self.config.get('format', None)
+        if format_config is None:
+            format_config = dict()
 
         default_format = format_config.pop('_default', None)
         if default_format is not None:
@@ -79,7 +87,9 @@ class ExcelWriter:
                 ws.write_blank(position, None, formatting)
 
     def set_worksheet_formatting(self, wb):
-        worksheet_config = self.config.get('worksheet', dict())
+        worksheet_config = self.config.get('worksheet', None)
+        if worksheet_config is None:
+            worksheet_config = dict()
 
         default_format = worksheet_config.pop('_default', None)
         if default_format is not None:
