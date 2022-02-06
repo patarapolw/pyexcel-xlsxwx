@@ -17,7 +17,6 @@ Save pyexcel data with XlsxWriter, while retaining good formatting.
 ```commandline
 $ pip install pyexcel-xlsxwx
 ```
-Note that `pyexcel` is not a dependency.
 
 ## Usage
 

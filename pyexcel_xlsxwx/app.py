@@ -1,7 +1,7 @@
 import xlsxwriter
 import ruamel.yaml as yaml
 from pathlib import Path
-import importlib_resources
+import importlib.resources
 from collections import OrderedDict
 from io import BytesIO
 
@@ -9,26 +9,34 @@ from io import BytesIO
 class ExcelWriter:
     def __init__(self, data, config=None):
         self.config = dict()
+        self.yaml = yaml.YAML(typ="safe", pure=True)
 
         if config is not None:
             if isinstance(config, str):
                 config_yaml_path = Path(config)
-                if config_yaml_path.exists() and config_yaml_path.suffix in ('.yml', '.yaml'):
-                    self.config = yaml.safe_load(config_yaml_path.read_text())
+                if config_yaml_path.exists() and config_yaml_path.suffix in (
+                    ".yml",
+                    ".yaml",
+                ):
+                    self.config = self.yaml.load(config_yaml_path.read_text())
                 else:
-                    self.config = yaml.safe_load(config)
+                    self.config = self.yaml.load(config)
             elif isinstance(config, (dict, OrderedDict)):
                 self.config = config
 
-        self.config = deep_merge_dict(self.config,
-                                      yaml.safe_load(importlib_resources.read_text('pyexcel_xlsxwx', 'default.yaml')))
+        self.config = deep_merge_dict(
+            self.config,
+            self.yaml.load(
+                importlib.resources.read_text("pyexcel_xlsxwx", "default.yaml")
+            ),
+        )
 
         self.data = data
 
     def save(self, out_file):
         output = BytesIO()
 
-        workbook_config = self.config.get('workbook', None)
+        workbook_config = self.config.get("workbook", None)
         if workbook_config is None:
             workbook_config = dict()
 
@@ -48,11 +56,11 @@ class ExcelWriter:
         Path(out_file).write_bytes(output.getvalue())
 
     def set_formatting(self, wb):
-        format_config = self.config.get('format', None)
+        format_config = self.config.get("format", None)
         if format_config is None:
             format_config = dict()
 
-        default_format = format_config.pop('_default', None)
+        default_format = format_config.pop("_default", None)
         if default_format is not None:
             default_format = wb.add_format(default_format)
 
@@ -65,7 +73,7 @@ class ExcelWriter:
         for sheet_name, sheet_format in format_config.items():
             ws = wb.get_worksheet_by_name(sheet_name)
 
-            default_format = sheet_format.pop('_default', None)
+            default_format = sheet_format.pop("_default", None)
             if default_format is not None:
                 default_format = wb.add_format(default_format)
 
@@ -79,7 +87,7 @@ class ExcelWriter:
                     ws.set_row(int(position) - 1, None, row_format)
                 elif position.isalpha():
                     col_format = wb.add_format(formatting)
-                    ws.set_column('{0}:{0}'.format(position), None, col_format)
+                    ws.set_column("{0}:{0}".format(position), None, col_format)
                 else:
                     cell_format[position] = wb.add_format(formatting)
 
@@ -87,11 +95,11 @@ class ExcelWriter:
                 ws.write_blank(position, None, formatting)
 
     def set_worksheet_formatting(self, wb):
-        worksheet_config = self.config.get('worksheet', None)
+        worksheet_config = self.config.get("worksheet", None)
         if worksheet_config is None:
             worksheet_config = dict()
 
-        default_format = worksheet_config.pop('_default', None)
+        default_format = worksheet_config.pop("_default", None)
         if default_format is not None:
             for sheet_name in self.data.keys():
                 self._set_worksheet_formatting(wb, sheet_name, default_format)
@@ -102,33 +110,40 @@ class ExcelWriter:
     def _set_worksheet_formatting(self, wb, sheet_name, formatting):
         ws = wb.get_worksheet_by_name(sheet_name)
 
-        freeze_panes = formatting.get('freeze_panes', None)
+        freeze_panes = formatting.get("freeze_panes", None)
         if freeze_panes is not None:
             ws.freeze_panes(freeze_panes)
 
-        smart_fit = formatting.get('smart_fit', False)
-        max_column_width = formatting.get('max_column_width', 30)
+        smart_fit = formatting.get("smart_fit", False)
+        max_column_width = formatting.get("max_column_width", 30)
         if smart_fit:
             for col_i, _ in enumerate(self.data[sheet_name][0]):
-                col_width = max([len(str(row[col_i])) if row[col_i] is not None else 0
-                                 for row in self.data[sheet_name]]) + 2
+                col_width = (
+                    max(
+                        [
+                            len(str(row[col_i])) if row[col_i] is not None else 0
+                            for row in self.data[sheet_name]
+                        ]
+                    )
+                    + 2
+                )
                 if col_width > max_column_width:
                     col_width = max_column_width
 
                 ws.set_column(col_i, col_i, col_width)
 
-        column_width = formatting.get('column_width', None)
+        column_width = formatting.get("column_width", None)
         if column_width is not None:
             if isinstance(column_width, list):
                 for i, width in enumerate(column_width):
                     ws.set_column(i, i, width)
             elif isinstance(column_width, (dict, OrderedDict)):
                 for key, width in column_width.keys():
-                    ws.set_column('{0}:{0}'.format(key), width)
+                    ws.set_column("{0}:{0}".format(key), width)
             else:
                 ws.set_column(0, len(self.data[sheet_name][0]) - 1, column_width)
 
-        row_height = formatting.get('row_height', None)
+        row_height = formatting.get("row_height", None)
         if row_height is not None:
             if isinstance(row_height, list):
                 for i, height in enumerate(row_height):
