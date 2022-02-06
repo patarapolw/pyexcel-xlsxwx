@@ -1,6 +1,6 @@
 # pyexcel-xlsxwx
 
-[![Build Status](https://travis-ci.org/patarapolw/pyexcel-xlsxwx.svg?branch=master)](https://travis-ci.org/patarapolw/pyexcel-xlsxwx)
+![Github Actions](https://github.com/patarapolw/pyexcel-xlsxwx/actions/workflows/test.yml/badge.svg)
 [![PyPI version shields.io](https://img.shields.io/pypi/v/pyexcel_xlsxwx.svg)](https://pypi.python.org/pypi/pyexcel_xlsxwx/)
 [![PyPI license](https://img.shields.io/pypi/l/pyexcel_xlsxwx.svg)](https://pypi.python.org/pypi/pyexcel_xlsxwx/)
 [![PyPI pyversions](https://img.shields.io/pypi/pyversions/pyexcel_xlsxwx.svg)](https://pypi.python.org/pypi/pyexcel_xlsxwx/)
